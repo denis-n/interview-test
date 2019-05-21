@@ -60,22 +60,30 @@ class Things extends React.PureComponent<IProps, IState> {
           Add
         </button>
 
-        <ul>
-          {isThingFormVisible && (
-            <li>
-              <ThingForm cancel={this.onHideThingForm} save={this.handleSave} />
-            </li>
-          )}
+        {isThingFormVisible && (
+          <ThingForm cancel={this.onHideThingForm} save={this.handleSave} />
+        )}
 
-          {things.map((x) => (
-            <li key={x.id}>
-              {x.id}: {x.name} -{" "}
-              <button type="button" onClick={this.onShowConfirmDelete(x.id)}>
-                Delete
-              </button>
-            </li>
-          ))}
-        </ul>
+        <table className="things-table">
+          <tbody>
+            {things.map((x) => (
+              <tr key={x.id}>
+                <td>{x.id}</td>
+
+                <td>{x.name}</td>
+
+                <td className="table__actions">
+                  <button
+                    type="button"
+                    onClick={this.onShowConfirmDelete(x.id)}
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </React.Fragment>
     );
   }
