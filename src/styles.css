@@ -10,6 +10,11 @@
 
 td.table__actions {
   width: 220px;
+  text-align: center;
+}
+
+td.table__actions button:not(:first-child) {
+  margin-left: 5px;
 }
 
 table,
@@ -46,6 +51,6 @@ td {
 }
 
 button {
-  width: 100px;
+  min-width: 100px;
   height: 25px;
 }

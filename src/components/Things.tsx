@@ -47,6 +47,10 @@ class Things extends React.PureComponent<IProps, IState> {
     }
   }
 
+  public onShowChildren = (id: string) => () => {
+    console.log("show children", id);
+  }
+
   public render() {
     const { things } = this.props;
 
@@ -73,6 +77,10 @@ class Things extends React.PureComponent<IProps, IState> {
                 <td>{x.name}</td>
 
                 <td className="table__actions">
+                  <button type="button" onClick={this.onShowChildren(x.id)}>
+                    Show Children
+                  </button>
+
                   <button
                     type="button"
                     onClick={this.onShowConfirmDelete(x.id)}
