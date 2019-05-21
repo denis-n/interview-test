@@ -8,6 +8,8 @@ import { create, remove } from "../data/actions/ThingActions";
 import { IThing } from "../data/types";
 import { IAppState } from "../store";
 
+import ThingForm from "./ThingForm";
+
 interface IProps {
   things: IThing[];
   create(name: string): void;
@@ -16,22 +18,18 @@ interface IProps {
 
 interface IState {
   isAdding: boolean;
-  name: string;
 }
 
 class Things extends React.PureComponent<IProps, IState> {
   public state: IState = {
     isAdding: false,
-    name: "",
   };
 
   public handleShowThingForm = () => {
     this.setState({ isAdding: true });
   }
 
-  public handleSave = () => {
-    const { name } = this.state;
-
+  public handleSave = (name: string) => {
     this.props.create(name);
 
     this.handleCancel();
@@ -40,22 +38,13 @@ class Things extends React.PureComponent<IProps, IState> {
   public handleCancel = () => {
     this.setState({
       isAdding: false,
-      name: "",
-    });
-  }
-
-  public handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-
-    this.setState({
-      name: value,
     });
   }
 
   public render() {
     const { things } = this.props;
 
-    const { isAdding, name } = this.state;
+    const { isAdding } = this.state;
 
     return (
       <React.Fragment>
@@ -68,21 +57,7 @@ class Things extends React.PureComponent<IProps, IState> {
         <ul>
           {isAdding && (
             <li>
-              <input
-                type="text"
-                placeholder="name"
-                name="name"
-                value={name}
-                onChange={this.handleChange}
-              />
-
-              <button type="button" onClick={this.handleSave}>
-                Save
-              </button>
-
-              <button type="button" onClick={this.handleCancel}>
-                Cancel
-              </button>
+              <ThingForm cancel={this.handleCancel} save={this.handleSave} />
             </li>
           )}
 
