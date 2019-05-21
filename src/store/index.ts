@@ -1,7 +1,5 @@
 import { applyMiddleware, combineReducers, createStore, Store } from "redux";
 
-import { IThing } from "../data/models";
-import todoReducer from "../data/reducers";
 import { IThingState, thingReducer } from "../data/reducers/thingReducer";
 
 // Thing has name: string; id: string, children: ChildThing[]
