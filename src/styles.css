@@ -2,3 +2,30 @@
   font-family: sans-serif;
   text-align: center;
 }
+
+.form {
+  margin: 15px 0;
+  width: 340px;
+}
+
+.form__input {
+  margin: 10px 0;
+}
+
+.form__input input {
+  height: 25px;
+  width: 100%;
+}
+
+.form__actions {
+  text-align: right;
+}
+
+.form__actions button {
+  margin-left: 5px;
+}
+
+button {
+  width: 100px;
+  height: 25px;
+}

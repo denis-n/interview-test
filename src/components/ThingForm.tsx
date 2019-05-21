@@ -34,23 +34,31 @@ class ThingForm extends React.PureComponent<IProps, IState> {
     const saveDisabled = !name;
 
     return (
-      <React.Fragment>
-        <input
-          type="text"
-          placeholder="thing name"
-          name="name"
-          value={name}
-          onChange={this.handleChange}
-        />
+      <div className="form">
+        <div className="form__input">
+          <input
+            type="text"
+            placeholder="thing name"
+            name="name"
+            value={name}
+            onChange={this.handleChange}
+          />
+        </div>
 
-        <button type="button" disabled={saveDisabled} onClick={this.handleSave}>
-          Save
-        </button>
+        <div className="form__actions">
+          <button
+            type="button"
+            disabled={saveDisabled}
+            onClick={this.handleSave}
+          >
+            Save
+          </button>
 
-        <button type="button" onClick={cancel}>
-          Cancel
-        </button>
-      </React.Fragment>
+          <button type="button" onClick={cancel}>
+            Cancel
+          </button>
+        </div>
+      </div>
     );
   }
 }
