@@ -1,12 +1,34 @@
-import { IThing } from "../models";
-
 export enum ThingActionTypes {
-  GET_ALL = "GET_ALL",
+  CREATE = "CREATE",
+  DELETE = "DELETE",
 }
 
-export interface IThingGetAllAction {
-  type: ThingActionTypes.GET_ALL;
-  payload: IThing[];
+export interface IThingCreateAction {
+  type: ThingActionTypes.CREATE;
+  id: string;
+  name: string;
 }
 
-export type ThingActions = IThingGetAllAction;
+export interface IThingDeleteAction {
+  type: ThingActionTypes.DELETE;
+  id: string;
+}
+
+export type ThingActions = IThingCreateAction | IThingDeleteAction;
+
+let nextId = 1;
+
+export function create(name: string): ThingActions {
+  return {
+    type: ThingActionTypes.CREATE,
+    id: String(nextId++),
+    name,
+  };
+}
+
+export function remove(id: string): ThingActions {
+  return {
+    type: ThingActionTypes.DELETE,
+    id,
+  };
+}
