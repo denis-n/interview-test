@@ -54,12 +54,22 @@ class Things extends React.PureComponent<IProps, IState> {
   public onShowConfirmDelete = (id: string) => () => {
     if (confirm("Are you sure you want to delete this beautiful thing?")) {
       this.props.remove(id);
+
+      if (this.state.selectedThing && this.state.selectedThing.id === id) {
+        this.setState({
+          selectedThing: null,
+        });
+      }
     }
   }
 
   public onShowChildren = (thing: IThing) => () => {
     this.setState((prevState) => {
-      const selectedThing = prevState.selectedThing === thing ? null : thing;
+      let selectedThing: null | IThing = thing;
+
+      if (prevState.selectedThing && prevState.selectedThing.id === thing.id) {
+        selectedThing = null;
+      }
 
       if (selectedThing) {
         this.props.getChildren(thing.id);
@@ -130,7 +140,12 @@ class Things extends React.PureComponent<IProps, IState> {
           </tbody>
         </table>
 
-        {selectedThing && <Children create={this.handleSaveNewChild} />}
+        {selectedThing && (
+          <Children
+            create={this.handleSaveNewChild}
+            items={selectedThing.children}
+          />
+        )}
       </React.Fragment>
     );
   }

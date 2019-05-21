@@ -44,6 +44,16 @@ export const thingReducer: Reducer<IThingState, ThingActions> = (
 
       return {
         ...state,
+        things: state.things.map((thing) => {
+          if (thing.id === action.parentId) {
+            return {
+              ...thing,
+              children: [newChildThing, ...thing.children],
+            };
+          }
+
+          return thing;
+        }),
         children: [newChildThing, ...state.children],
       };
     }
@@ -51,12 +61,17 @@ export const thingReducer: Reducer<IThingState, ThingActions> = (
     case ThingActionTypes.GET_CHILDREN: {
       return {
         ...state,
-        things: state.things.map((x) => {
-          if (x.id === action.id) {
-            x.children = state.children.filter((item) => item.parentId === x.id);
+        things: state.things.map((thing) => {
+          if (thing.id === action.id) {
+            return {
+              ...thing,
+              children: state.children.filter(
+                (item) => item.parentId === thing.id,
+              ),
+            };
           }
 
-          return x;
+          return thing;
         }),
       };
     }
