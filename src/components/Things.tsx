@@ -10,7 +10,7 @@ import {
   getChildren,
   remove,
 } from "../data/actions/ThingActions";
-import { IThing } from "../data/types";
+import { IChildThing, IThing } from "../data/types";
 import { IAppState } from "../store";
 
 import Children from "./Children";
@@ -94,6 +94,16 @@ class Things extends React.PureComponent<IProps, IState> {
 
     const { isThingFormVisible, selectedThing } = this.state;
 
+    let selectedChildThings: IChildThing[] = [];
+
+    if (selectedThing) {
+      const thing = things.find((x) => x.id === selectedThing.id);
+
+      if (thing) {
+        selectedChildThings = thing.children;
+      }
+    }
+
     return (
       <React.Fragment>
         <h1>All Things:</h1>
@@ -143,7 +153,7 @@ class Things extends React.PureComponent<IProps, IState> {
         {selectedThing && (
           <Children
             create={this.handleSaveNewChild}
-            items={selectedThing.children}
+            items={selectedChildThings}
           />
         )}
       </React.Fragment>
