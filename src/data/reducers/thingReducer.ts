@@ -1,5 +1,3 @@
-import { Reducer } from "redux";
-
 import { ThingActions, ThingActionTypes } from "../actions/ThingActions";
 import { IChildThing, IThing } from "../types";
 
@@ -13,9 +11,9 @@ const initialState: IThingState = {
   children: [],
 };
 
-export const thingReducer: Reducer<IThingState, ThingActions> = (
-  state = initialState,
-  action,
+export const thingReducer = (
+  state: IThingState = initialState,
+  action: ThingActions,
 ) => {
   switch (action.type) {
     case ThingActionTypes.CREATE: {
