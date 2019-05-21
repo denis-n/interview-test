@@ -1,6 +1,7 @@
 import * as React from "react";
 
 interface IProps {
+  placeholder: string;
   save(name: string): void;
   cancel(): void;
 }
@@ -9,7 +10,7 @@ interface IState {
   name: string;
 }
 
-class ThingForm extends React.PureComponent<IProps, IState> {
+class EditForm extends React.PureComponent<IProps, IState> {
   public state: IState = {
     name: "",
   };
@@ -29,7 +30,7 @@ class ThingForm extends React.PureComponent<IProps, IState> {
   public render() {
     const { name } = this.state;
 
-    const { cancel } = this.props;
+    const { placeholder, cancel } = this.props;
 
     const saveDisabled = !name;
 
@@ -38,9 +39,10 @@ class ThingForm extends React.PureComponent<IProps, IState> {
         <div className="form__input">
           <input
             type="text"
-            placeholder="thing name"
+            placeholder={placeholder}
             name="name"
             value={name}
+            autoComplete="off"
             onChange={this.handleChange}
           />
         </div>
@@ -63,4 +65,4 @@ class ThingForm extends React.PureComponent<IProps, IState> {
   }
 }
 
-export default ThingForm;
+export default EditForm;
