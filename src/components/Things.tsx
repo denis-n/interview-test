@@ -17,53 +17,62 @@ interface IProps {
 }
 
 interface IState {
-  isAdding: boolean;
+  isThingFormVisible: boolean;
 }
 
 class Things extends React.PureComponent<IProps, IState> {
   public state: IState = {
-    isAdding: false,
+    isThingFormVisible: false,
   };
 
-  public handleShowThingForm = () => {
-    this.setState({ isAdding: true });
+  public onShowThingForm = () => {
+    this.setState({ isThingFormVisible: true });
   }
 
   public handleSave = (name: string) => {
     this.props.create(name);
 
-    this.handleCancel();
+    this.onHideThingForm();
   }
 
-  public handleCancel = () => {
+  public onHideThingForm = () => {
     this.setState({
-      isAdding: false,
+      isThingFormVisible: false,
     });
+  }
+
+  public onShowConfirmDelete = (id: string) => () => {
+    if (confirm("Are you sure you want to delete this beautiful thing?")) {
+      this.props.remove(id);
+    }
   }
 
   public render() {
     const { things } = this.props;
 
-    const { isAdding } = this.state;
+    const { isThingFormVisible } = this.state;
 
     return (
       <React.Fragment>
-        <h1>
-          All Things:{" "}
-          <button type="button" onClick={this.handleShowThingForm}>
-            Add
-          </button>
-        </h1>
+        <h1>All Things:</h1>
+
+        <button type="button" onClick={this.onShowThingForm}>
+          Add
+        </button>
+
         <ul>
-          {isAdding && (
+          {isThingFormVisible && (
             <li>
-              <ThingForm cancel={this.handleCancel} save={this.handleSave} />
+              <ThingForm cancel={this.onHideThingForm} save={this.handleSave} />
             </li>
           )}
 
           {things.map((x) => (
             <li key={x.id}>
-              {x.id}: {x.name}
+              {x.id}: {x.name} -{" "}
+              <button type="button" onClick={this.onShowConfirmDelete(x.id)}>
+                Delete
+              </button>
             </li>
           ))}
         </ul>
