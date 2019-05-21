@@ -26,13 +26,13 @@ interface IProps {
 
 interface IState {
   isThingFormVisible: boolean;
-  selectedThing: null | IThing;
+  selectedId: null | string;
 }
 
 class Things extends React.PureComponent<IProps, IState> {
   public state: IState = {
     isThingFormVisible: false,
-    selectedThing: null,
+    selectedId: null,
   };
 
   public onShowThingForm = () => {
@@ -55,9 +55,9 @@ class Things extends React.PureComponent<IProps, IState> {
     if (confirm("Are you sure you want to delete this beautiful thing?")) {
       this.props.remove(id);
 
-      if (this.state.selectedThing && this.state.selectedThing.id === id) {
+      if (this.state.selectedId === id) {
         this.setState({
-          selectedThing: null,
+          selectedId: null,
         });
       }
     }
@@ -65,39 +65,39 @@ class Things extends React.PureComponent<IProps, IState> {
 
   public onShowChildren = (thing: IThing) => () => {
     this.setState((prevState) => {
-      let selectedThing: null | IThing = thing;
+      let selectedId: null | string = thing.id;
 
-      if (prevState.selectedThing && prevState.selectedThing.id === thing.id) {
-        selectedThing = null;
+      if (prevState.selectedId === thing.id) {
+        selectedId = null;
       }
 
-      if (selectedThing) {
-        this.props.getChildren(thing.id);
+      if (selectedId) {
+        this.props.getChildren(selectedId);
       }
 
       return {
-        selectedThing,
+        selectedId,
       };
     });
   }
 
   public handleSaveNewChild = (name: string) => {
-    const { selectedThing } = this.state;
+    const { selectedId } = this.state;
 
-    if (selectedThing) {
-      this.props.createChild(selectedThing.id, name);
+    if (selectedId) {
+      this.props.createChild(selectedId, name);
     }
   }
 
   public render() {
     const { things } = this.props;
 
-    const { isThingFormVisible, selectedThing } = this.state;
+    const { isThingFormVisible, selectedId } = this.state;
 
     let selectedChildThings: IChildThing[] = [];
 
-    if (selectedThing) {
-      const thing = things.find((x) => x.id === selectedThing.id);
+    if (selectedId) {
+      const thing = things.find((x) => x.id === selectedId);
 
       if (thing) {
         selectedChildThings = thing.children;
@@ -125,9 +125,7 @@ class Things extends React.PureComponent<IProps, IState> {
             {things.map((x) => (
               <tr
                 key={x.id}
-                className={`${
-                  selectedThing && x.id === selectedThing.id ? "selected" : ""
-                }`}
+                className={`${x.id === selectedId ? "selected" : ""}`}
               >
                 <td>{x.id}</td>
 
@@ -150,7 +148,7 @@ class Things extends React.PureComponent<IProps, IState> {
           </tbody>
         </table>
 
-        {selectedThing && (
+        {selectedId && (
           <Children
             create={this.handleSaveNewChild}
             items={selectedChildThings}
