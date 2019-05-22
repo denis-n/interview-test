@@ -1,11 +1,10 @@
 export interface IThing {
   id: string;
   name: string;
-  children: IChildThing[];
+  children: string[];
 }
 
 export interface IChildThing {
   id: string;
   name: string;
-  parentId: string;
 }

@@ -1,7 +1,6 @@
 export enum ThingActionTypes {
   CREATE = "CREATE",
   DELETE = "DELETE",
-  GET_CHILDREN = "GET_CHILDREN",
   CREATE_CHILD = "CREATE_CHILD",
 }
 
@@ -23,16 +22,10 @@ export interface IThingCreateChildAction {
   name: string;
 }
 
-export interface IThingGetChildrenAction {
-  type: ThingActionTypes.GET_CHILDREN;
-  id: string;
-}
-
 export type ThingActions =
   | IThingCreateAction
   | IThingDeleteAction
-  | IThingCreateChildAction
-  | IThingGetChildrenAction;
+  | IThingCreateChildAction;
 
 let nextThingId = 1;
 let nextChildThingId = 1;
@@ -48,13 +41,6 @@ export function create(name: string): ThingActions {
 export function remove(id: string): ThingActions {
   return {
     type: ThingActionTypes.DELETE,
-    id,
-  };
-}
-
-export function getChildren(id: string): ThingActions {
-  return {
-    type: ThingActionTypes.GET_CHILDREN,
     id,
   };
 }

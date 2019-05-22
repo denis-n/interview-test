@@ -1,14 +1,19 @@
 import { ThingActions, ThingActionTypes } from "../actions/ThingActions";
 import { IChildThing, IThing } from "../types";
 
+export interface NormalizedObjects<T> {
+  byId: { [id: string]: T };
+  allIds: string[];
+}
+
 export interface IThingState {
-  readonly things: IThing[];
-  readonly children: IChildThing[];
+  readonly things: NormalizedObjects<IThing>;
+  readonly children: NormalizedObjects<IChildThing>;
 }
 
 const initialState: IThingState = {
-  things: [],
-  children: [],
+  things: { byId: {}, allIds: [] },
+  children: { byId: {}, allIds: [] },
 };
 
 export const thingReducer = (
@@ -17,60 +22,70 @@ export const thingReducer = (
 ) => {
   switch (action.type) {
     case ThingActionTypes.CREATE: {
-      const newThing = { id: action.id, name: action.name, children: [] };
+      const newThing: IThing = {
+        id: action.id,
+        name: action.name,
+        children: [],
+      };
 
       return {
         ...state,
-        things: [newThing, ...state.things],
+        things: {
+          byId: {
+            ...state.things.byId,
+            [newThing.id]: newThing,
+          },
+          allIds: [newThing.id, ...state.things.allIds],
+        },
       };
     }
 
     case ThingActionTypes.DELETE: {
+      const {
+        [action.id]: thingToDelete,
+        ...thingsWithoutDeleted
+      } = state.things.byId;
+
       return {
         ...state,
-        things: state.things.filter((x) => x.id !== action.id),
-        children: state.children.filter((x) => x.parentId !== action.id),
+        things: {
+          byId: thingsWithoutDeleted,
+          allIds: state.things.allIds.filter((x) => x !== action.id),
+        },
+        // children: state.children.filter((x) => x.parentId !== action.id),
       };
     }
 
     case ThingActionTypes.CREATE_CHILD: {
-      const newChildThing = {
+      const newChildThing: IChildThing = {
         id: action.id,
         name: action.name,
-        parentId: action.parentId,
       };
 
       return {
         ...state,
-        things: state.things.map((thing) => {
-          if (thing.id === action.parentId) {
-            return {
-              ...thing,
-              children: [newChildThing, ...thing.children],
-            };
-          }
 
-          return thing;
-        }),
-        children: [newChildThing, ...state.children],
-      };
-    }
+        things: {
+          ...state.things,
+          byId: {
+            ...state.things.byId,
+            [action.parentId]: {
+              ...state.things.byId[action.parentId],
+              children: [
+                newChildThing.id,
+                ...state.things.byId[action.parentId].children,
+              ],
+            },
+          },
+        },
 
-    case ThingActionTypes.GET_CHILDREN: {
-      return {
-        ...state,
-        things: state.things.map((thing) => {
-          if (thing.id === action.id) {
-            return {
-              ...thing,
-              children: state.children.filter(
-                (item) => item.parentId === thing.id,
-              ),
-            };
-          }
-
-          return thing;
-        }),
+        children: {
+          byId: {
+            ...state.children.byId,
+            [newChildThing.id]: newChildThing,
+          },
+          allIds: [newChildThing.id, ...state.children.allIds],
+        },
       };
     }
 

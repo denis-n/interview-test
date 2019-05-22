@@ -4,23 +4,19 @@
 import * as React from "react";
 import { connect } from "react-redux";
 
-import {
-  create,
-  createChild,
-  getChildren,
-  remove,
-} from "../data/actions/ThingActions";
+import { create, createChild, remove } from "../data/actions/ThingActions";
 import { IChildThing, IThing } from "../data/types";
 import { IAppState } from "../store";
 
+import { NormalizedObjects } from "../data/reducers/thingReducer";
 import Children from "./Children";
 import EditForm from "./EditForm";
 
 interface IProps {
-  things: IThing[];
+  things: NormalizedObjects<IThing>;
+  children: NormalizedObjects<IChildThing>;
   create(name: string): void;
   remove(id: string): void;
-  getChildren(id: string): void;
   createChild(parentId: string, name: string): void;
 }
 
@@ -63,16 +59,12 @@ class Things extends React.PureComponent<IProps, IState> {
     }
   }
 
-  public onShowChildren = (thing: IThing) => () => {
+  public onShowChildren = (id: string) => () => {
     this.setState((prevState) => {
-      let selectedId: null | string = thing.id;
+      let selectedId: null | string = id;
 
-      if (prevState.selectedId === thing.id) {
+      if (prevState.selectedId === id) {
         selectedId = null;
-      }
-
-      if (selectedId) {
-        this.props.getChildren(selectedId);
       }
 
       return {
@@ -90,18 +82,16 @@ class Things extends React.PureComponent<IProps, IState> {
   }
 
   public render() {
-    const { things } = this.props;
+    const { things, children } = this.props;
 
     const { isThingFormVisible, selectedId } = this.state;
 
     let selectedChildThings: IChildThing[] = [];
 
     if (selectedId) {
-      const thing = things.find((x) => x.id === selectedId);
-
-      if (thing) {
-        selectedChildThings = thing.children;
-      }
+      selectedChildThings = things.byId[selectedId].children.map(
+        (x) => children.byId[x],
+      );
     }
 
     return (
@@ -122,24 +112,18 @@ class Things extends React.PureComponent<IProps, IState> {
 
         <table className="things-table">
           <tbody>
-            {things.map((x) => (
-              <tr
-                key={x.id}
-                className={`${x.id === selectedId ? "selected" : ""}`}
-              >
-                <td>{x.id}</td>
+            {things.allIds.map((x) => (
+              <tr key={x} className={`${x === selectedId ? "selected" : ""}`}>
+                <td>{x}</td>
 
-                <td>{x.name}</td>
+                <td>{things.byId[x].name}</td>
 
                 <td className="table__actions">
                   <button type="button" onClick={this.onShowChildren(x)}>
                     Show Children
                   </button>
 
-                  <button
-                    type="button"
-                    onClick={this.onShowConfirmDelete(x.id)}
-                  >
+                  <button type="button" onClick={this.onShowConfirmDelete(x)}>
                     Delete
                   </button>
                 </td>
@@ -162,13 +146,13 @@ class Things extends React.PureComponent<IProps, IState> {
 const mapStateToProps = (store: IAppState) => {
   return {
     things: store.thingState.things,
+    children: store.thingState.children,
   };
 };
 
 const mapDispatchToProps = {
   create,
   remove,
-  getChildren,
   createChild,
 };
 
