@@ -89,9 +89,9 @@ class Things extends React.PureComponent<IProps, IState> {
     let selectedChildThings: IChildThing[] = [];
 
     if (selectedId) {
-      selectedChildThings = things.byId[selectedId].children.map(
-        (x) => children.byId[x],
-      );
+      selectedChildThings = children.allIds
+        .filter((x) => things.byId[selectedId].children.includes(x))
+        .map((x) => children.byId[x]);
     }
 
     return (

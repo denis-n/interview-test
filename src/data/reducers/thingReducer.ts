@@ -52,7 +52,13 @@ export const thingReducer = (
           byId: thingsWithoutDeleted,
           allIds: state.things.allIds.filter((x) => x !== action.id),
         },
-        // children: state.children.filter((x) => x.parentId !== action.id),
+
+        children: {
+          ...state.children,
+          allIds: state.children.allIds.filter(
+            (x) => thingToDelete.children.includes(x) === false,
+          ),
+        },
       };
     }
 
